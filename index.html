@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AERO — Private Aviation</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=DM+Sans:wght@200;300;400&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="nav" id="nav">
+    <div class="nav-brand">
+      <span class="nav-logo">✦ AERO</span>
+    </div>
+    <div class="nav-links">
+      <a href="#" class="nav-link" onclick="showSection('listings')">Empty Legs</a>
+      <a href="#" class="nav-link" onclick="showSection('dashboard')">My Flights</a>
+      <a href="#" class="nav-link nav-cta">Request Charter</a>
+    </div>
+  </nav>
+
+  <!-- HERO SECTION -->
+  <section class="section active" id="section-hero">
+    <div class="hero-bg">
+      <div class="hero-overlay"></div>
+      <div class="hero-grid"></div>
+    </div>
+
+    <div class="hero-content">
+      <p class="hero-eyebrow">Empty Leg Flights · Up to 75% Off Charter Rates</p>
+      <h1 class="hero-title">
+        Fly Private.<br/>
+        <em>Without Compromise.</em>
+      </h1>
+      <p class="hero-sub">Exclusive last-minute access to repositioning private jets — curated for those who refuse to wait.</p>
+
+      <!-- Search Bar -->
+      <div class="search-bar glass">
+        <div class="search-field">
+          <label>FROM</label>
+          <input type="text" id="search-from" placeholder="London, New York…" autocomplete="off" />
+        </div>
+        <div class="search-divider">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
+        <div class="search-field">
+          <label>TO</label>
+          <input type="text" id="search-to" placeholder="Paris, Dubai…" autocomplete="off" />
+        </div>
+        <div class="search-field">
+          <label>DATE</label>
+          <input type="date" id="search-date" />
+        </div>
+        <div class="search-field">
+          <label>PAX</label>
+          <select id="search-pax">
+            <option>1</option><option>2</option><option>3</option>
+            <option>4</option><option>5</option><option>6+</option>
+          </select>
+        </div>
+        <button class="search-btn" onclick="handleSearch()">
+          Search
+        </button>
+      </div>
+
+      <div class="hero-stats">
+        <div class="stat"><span class="stat-num">247</span><span class="stat-label">Available Legs</span></div>
+        <div class="stat-sep"></div>
+        <div class="stat"><span class="stat-num">48</span><span class="stat-label">Aircraft Types</span></div>
+        <div class="stat-sep"></div>
+        <div class="stat"><span class="stat-num">120+</span><span class="stat-label">Destinations</span></div>
+      </div>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="scroll-cue" onclick="showSection('listings')">
+      <span>View Available Flights</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+    </div>
+  </section>
+
+  <!-- LISTINGS SECTION -->
+  <section class="section" id="section-listings">
+    <div class="listings-header">
+      <div>
+        <p class="section-eyebrow">Empty Leg Inventory</p>
+        <h2 class="section-title">Available Flights</h2>
+      </div>
+      <div class="filter-row">
+        <select class="filter-select" id="filter-price" onchange="applyFilters()">
+          <option value="">Price: Any</option>
+          <option value="low">Under $5,000</option>
+          <option value="mid">$5,000 – $15,000</option>
+          <option value="high">$15,000+</option>
+        </select>
+        <select class="filter-select" id="filter-aircraft" onchange="applyFilters()">
+          <option value="">Aircraft: All</option>
+          <option value="light">Light Jet</option>
+          <option value="midsize">Midsize</option>
+          <option value="heavy">Heavy Jet</option>
+          <option value="ultra">Ultra Long Range</option>
+        </select>
+        <select class="filter-select" id="filter-region" onchange="applyFilters()">
+          <option value="">Region: All</option>
+          <option value="europe">Europe</option>
+          <option value="americas">Americas</option>
+          <option value="mideast">Middle East</option>
+          <option value="asia">Asia</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="flights-grid" id="flights-grid">
+      <!-- Populated by JS -->
+    </div>
+
+    <button class="back-btn" onclick="showSection('hero')">← Back</button>
+  </section>
+
+  <!-- FLIGHT DETAILS SECTION -->
+  <section class="section" id="section-details">
+    <div class="details-container" id="details-container">
+      <!-- Populated by JS -->
+    </div>
+    <button class="back-btn" onclick="showSection('listings')">← All Flights</button>
+  </section>
+
+  <!-- BOOKING FLOW SECTION -->
+  <section class="section" id="section-booking">
+    <div class="booking-container">
+      <div class="booking-steps" id="booking-steps">
+        <div class="step active" data-step="1">Passenger Details</div>
+        <div class="step-line"></div>
+        <div class="step" data-step="2">Review</div>
+        <div class="step-line"></div>
+        <div class="step" data-step="3">Payment</div>
+        <div class="step-line"></div>
+        <div class="step" data-step="4">Confirmed</div>
+      </div>
+
+      <div id="booking-step-content">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+    <button class="back-btn" id="booking-back-btn" onclick="showSection('details')">← Flight Details</button>
+  </section>
+
+  <!-- DASHBOARD SECTION -->
+  <section class="section" id="section-dashboard">
+    <div class="dashboard-header">
+      <p class="section-eyebrow">Member Portal</p>
+      <h2 class="section-title">My AERO</h2>
+    </div>
+    <div class="dashboard-grid">
+      <div class="dash-card glass">
+        <p class="dash-label">Upcoming Flights</p>
+        <div id="upcoming-flights">
+          <div class="empty-state">No upcoming flights.<br/><span onclick="showSection('listings')" class="link-gold">Browse empty legs →</span></div>
+        </div>
+      </div>
+      <div class="dash-card glass">
+        <p class="dash-label">Saved Routes</p>
+        <div class="saved-routes">
+          <div class="saved-route">LHR → JFK</div>
+          <div class="saved-route">DXB → CDG</div>
+          <div class="saved-route">MIA → LAX</div>
+        </div>
+      </div>
+      <div class="dash-card glass wide">
+        <p class="dash-label">Recommended for You</p>
+        <div id="recommended-flights" class="rec-grid">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+    <button class="back-btn" onclick="showSection('hero')">← Home</button>
+  </section>
+
+  <!-- TOAST -->
+  <div id="toast" class="toast"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
