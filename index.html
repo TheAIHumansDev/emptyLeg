@@ -24,8 +24,6 @@
 
   <!-- ===================== HERO ===================== -->
   <section class="section active" id="section-hero">
-
-    <!-- Video Background -->
     <div class="video-wrap">
       <video id="hero-video" autoplay muted loop playsinline>
         <source src="file.mp4" type="video/mp4" />
@@ -33,8 +31,6 @@
       <div class="video-fallback"></div>
       <div class="video-overlay"></div>
     </div>
-
-    <!-- Particle canvas -->
     <canvas id="particle-canvas"></canvas>
 
     <div class="hero-content">
@@ -43,7 +39,6 @@
         AI-Powered · Empty Leg Flights · Up to 75% Off Charter Rates
       </p>
 
-      <!-- Evaporate title — letters split by JS -->
       <h1 class="hero-title" id="hero-title" aria-label="AI Finds Jets"></h1>
 
       <p class="hero-sub reveal-up delay-2">
@@ -51,33 +46,15 @@
         surfacing the perfect empty leg before anyone else does.
       </p>
 
-      <!-- Search Bar -->
-      <div class="search-bar reveal-up delay-3">
-        <div class="search-field">
-          <label>FROM</label>
-          <input type="text" id="search-from" placeholder="London, New York…" autocomplete="off" />
-        </div>
-        <div class="search-divider">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </div>
-        <div class="search-field">
-          <label>TO</label>
-          <input type="text" id="search-to" placeholder="Paris, Dubai…" autocomplete="off" />
-        </div>
-        <div class="search-field">
-          <label>DATE</label>
-          <input type="date" id="search-date" />
-        </div>
-        <div class="search-field search-field-sm">
-          <label>PAX</label>
-          <select id="search-pax">
-            <option>1</option><option>2</option><option>3</option>
-            <option>4</option><option>5</option><option>6+</option>
-          </select>
-        </div>
-        <button class="search-btn" onclick="handleSearch()">
-          <span>Find Jets</span>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      <!-- Single elegant CTA — no search bar here -->
+      <div class="hero-cta-group reveal-up delay-3">
+        <button class="hero-primary-btn" onclick="showSection('listings')">
+          <span>Browse Available Jets</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+        <button class="hero-secondary-btn" onclick="showSection('listings'); openFilterPanel()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 6h18M7 12h10M11 18h2"/></svg>
+          <span>Filter by Route &amp; Date</span>
         </button>
       </div>
 
@@ -107,34 +84,146 @@
 
   <!-- ===================== LISTINGS ===================== -->
   <section class="section" id="section-listings">
-    <div class="listings-header">
-      <div>
+
+    <!-- Top bar: title + filter trigger -->
+    <div class="listings-topbar">
+      <div class="listings-title-group">
         <p class="section-eyebrow">AI-Curated Inventory</p>
         <h2 class="section-title">Available Private Jets</h2>
       </div>
-      <div class="filter-row">
-        <select class="filter-select" id="filter-price" onchange="applyFilters()">
-          <option value="">Price: Any</option>
-          <option value="low">Under $5,000</option>
-          <option value="mid">$5,000 – $15,000</option>
-          <option value="high">$15,000+</option>
-        </select>
-        <select class="filter-select" id="filter-aircraft" onchange="applyFilters()">
-          <option value="">Jet Class: All</option>
-          <option value="light">Light Jet</option>
-          <option value="midsize">Midsize Jet</option>
-          <option value="heavy">Heavy Jet</option>
-          <option value="ultra">Ultra Long Range</option>
-        </select>
-        <select class="filter-select" id="filter-region" onchange="applyFilters()">
-          <option value="">Region: All</option>
-          <option value="europe">Europe</option>
-          <option value="americas">Americas</option>
-          <option value="mideast">Middle East</option>
-          <option value="asia">Asia</option>
-        </select>
+      <button class="filter-trigger-btn" id="filter-trigger-btn" onclick="toggleFilterPanel()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 6h18M7 12h10M11 18h2"/></svg>
+        <span id="filter-btn-label">Filter</span>
+        <span class="filter-count-badge" id="filter-count-badge" style="display:none">0</span>
+      </button>
+    </div>
+
+    <!-- Active filter tags -->
+    <div class="active-tags" id="active-tags"></div>
+
+    <!-- Results summary -->
+    <div class="results-summary" id="results-summary"></div>
+
+    <!-- FILTER PANEL (slide-down drawer) -->
+    <div class="filter-panel" id="filter-panel">
+      <div class="filter-panel-inner">
+
+        <!-- Row 1: Route -->
+        <div class="fp-section">
+          <div class="fp-label">Route</div>
+          <div class="fp-route-row">
+            <div class="fp-airport-wrap">
+              <div class="fp-airport-field" id="fp-from-wrap">
+                <div class="fp-airport-label">From</div>
+                <input
+                  type="text"
+                  id="fp-from"
+                  class="fp-airport-input"
+                  placeholder="Any departure…"
+                  autocomplete="off"
+                  oninput="airportSuggest('fp-from','fp-from-dropdown')"
+                  onfocus="airportSuggest('fp-from','fp-from-dropdown')"
+                />
+                <div class="fp-dropdown" id="fp-from-dropdown"></div>
+              </div>
+              <div class="fp-route-swap" onclick="swapAirports()" title="Swap">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l4-4m-4 4l-4-4"/></svg>
+              </div>
+              <div class="fp-airport-field" id="fp-to-wrap">
+                <div class="fp-airport-label">To</div>
+                <input
+                  type="text"
+                  id="fp-to"
+                  class="fp-airport-input"
+                  placeholder="Any destination…"
+                  autocomplete="off"
+                  oninput="airportSuggest('fp-to','fp-to-dropdown')"
+                  onfocus="airportSuggest('fp-to','fp-to-dropdown')"
+                />
+                <div class="fp-dropdown" id="fp-to-dropdown"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 2: Date -->
+        <div class="fp-section">
+          <div class="fp-label">Departure Window</div>
+          <div class="fp-date-pills">
+            <button class="fp-pill active" data-range="any"    onclick="selectDateRange(this,'any')">Any Date</button>
+            <button class="fp-pill"        data-range="today"  onclick="selectDateRange(this,'today')">Today</button>
+            <button class="fp-pill"        data-range="7"      onclick="selectDateRange(this,'7')">Next 7 Days</button>
+            <button class="fp-pill"        data-range="30"     onclick="selectDateRange(this,'30')">Next 30 Days</button>
+            <button class="fp-pill"        data-range="custom" onclick="selectDateRange(this,'custom')">Custom Range</button>
+          </div>
+          <div class="fp-custom-dates" id="fp-custom-dates">
+            <div class="fp-date-field">
+              <div class="fp-airport-label">From Date</div>
+              <input type="date" id="fp-date-from" class="fp-date-input" onchange="applyFilters()" />
+            </div>
+            <div class="fp-date-field">
+              <div class="fp-airport-label">To Date</div>
+              <input type="date" id="fp-date-to" class="fp-date-input" onchange="applyFilters()" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 3: Jet class chips -->
+        <div class="fp-section">
+          <div class="fp-label">Jet Class</div>
+          <div class="fp-chips">
+            <button class="fp-chip active" data-class="" onclick="selectJetClass(this,'')">All Classes</button>
+            <button class="fp-chip" data-class="light"   onclick="selectJetClass(this,'light')">
+              <span class="chip-icon">✈</span> Light Jet <span class="chip-sub">4–6 pax · Short haul</span>
+            </button>
+            <button class="fp-chip" data-class="midsize" onclick="selectJetClass(this,'midsize')">
+              <span class="chip-icon">✈</span> Midsize <span class="chip-sub">6–8 pax · Mid range</span>
+            </button>
+            <button class="fp-chip" data-class="heavy"   onclick="selectJetClass(this,'heavy')">
+              <span class="chip-icon">✈</span> Heavy Jet <span class="chip-sub">8–14 pax · Long haul</span>
+            </button>
+            <button class="fp-chip" data-class="ultra"   onclick="selectJetClass(this,'ultra')">
+              <span class="chip-icon">✈</span> Ultra Long Range <span class="chip-sub">10–16 pax · Global</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Row 4: Price range -->
+        <div class="fp-section fp-section-inline">
+          <div>
+            <div class="fp-label">Max Price</div>
+            <div class="fp-price-pills">
+              <button class="fp-pill active" data-price="" onclick="selectPrice(this,'')">Any</button>
+              <button class="fp-pill" data-price="5000"  onclick="selectPrice(this,'5000')">Under $5K</button>
+              <button class="fp-pill" data-price="15000" onclick="selectPrice(this,'15000')">Under $15K</button>
+              <button class="fp-pill" data-price="50000" onclick="selectPrice(this,'50000')">Under $50K</button>
+            </div>
+          </div>
+          <div>
+            <div class="fp-label">Region</div>
+            <div class="fp-price-pills">
+              <button class="fp-pill active" data-region="" onclick="selectRegion(this,'')">Anywhere</button>
+              <button class="fp-pill" data-region="europe"   onclick="selectRegion(this,'europe')">Europe</button>
+              <button class="fp-pill" data-region="americas" onclick="selectRegion(this,'americas')">Americas</button>
+              <button class="fp-pill" data-region="mideast"  onclick="selectRegion(this,'mideast')">Middle East</button>
+              <button class="fp-pill" data-region="asia"     onclick="selectRegion(this,'asia')">Asia</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="fp-actions">
+          <button class="fp-clear-btn" onclick="clearAllFilters()">Clear All</button>
+          <button class="fp-apply-btn" onclick="applyFilters(); closeFilterPanel()">
+            Show Results
+            <span id="fp-result-count" class="fp-result-badge"></span>
+          </button>
+        </div>
+
       </div>
     </div>
+    <!-- /filter-panel -->
+
     <div class="flights-grid" id="flights-grid"></div>
     <button class="back-btn" onclick="showSection('hero')">← Back to Home</button>
   </section>
@@ -190,6 +279,9 @@
     </div>
     <button class="back-btn" onclick="showSection('hero')">← Home</button>
   </section>
+
+  <!-- Filter panel backdrop -->
+  <div class="fp-backdrop" id="fp-backdrop" onclick="closeFilterPanel()"></div>
 
   <div id="toast" class="toast"></div>
   <script src="app.js"></script>
