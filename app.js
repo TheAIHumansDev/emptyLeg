@@ -101,18 +101,53 @@ function ts(hoursFromNow) {
 //  INIT
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
+  initVideo();
   initNav();
   initHeroTitle();
   initParticleCanvas();
   loadFlights().then(() => {
+    renderFlights(AppState.flights);
     animateCounters();
     initCountdowns();
   });
-  // Close dropdowns on outside click
+
+  // Close dropdowns & filter panel on outside click
   document.addEventListener('click', e => {
     if (!e.target.closest('.fp-airport-field')) closeAllDropdowns();
+    if (!e.target.closest('#filter-panel') && !e.target.closest('#filter-trigger-btn')) {
+      const panel = document.getElementById('filter-panel');
+      if (panel && panel.classList.contains('open')) closeFilterPanel();
+    }
+  });
+
+  // Escape key closes filter panel
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeFilterPanel();
   });
 });
+
+// ============================================================
+//  VIDEO INIT — handle autoplay + fallback gracefully
+// ============================================================
+function initVideo() {
+  const video    = document.getElementById('hero-video');
+  const fallback = document.getElementById('video-fallback');
+  if (!video) return;
+
+  video.addEventListener('canplay', () => {
+    if (fallback) { fallback.style.transition = 'opacity 0.6s ease'; fallback.style.opacity = '0'; }
+  });
+
+  video.addEventListener('error', () => {
+    if (fallback) fallback.style.opacity = '1';
+    video.style.opacity = '0';
+  });
+
+  const p = video.play();
+  if (p !== undefined) p.catch(() => {
+    if (fallback) fallback.style.opacity = '1';
+  });
+}
 
 // ============================================================
 //  NAV
@@ -137,34 +172,33 @@ function updateNavForSection(name) {
 //  SECTION NAVIGATION
 // ============================================================
 function showSection(name) {
+  const alreadyActive = document.getElementById(`section-${name}`)?.classList.contains('active');
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   const el = document.getElementById(`section-${name}`);
   if (el) { el.classList.add('active'); window.scrollTo({ top:0, behavior:'smooth' }); }
   updateNavForSection(name);
-  if (name === 'listings') renderFlights(AppState.filteredFlights);
+  if (name === 'listings') renderFlights(AppState.filteredFlights.length ? AppState.filteredFlights : AppState.flights);
   if (name === 'dashboard') renderDashboard();
   if (name === 'hero') animateCounters();
+  // Close filter panel when navigating away
+  if (name !== 'listings') closeFilterPanel();
 }
 
 // ============================================================
 //  FILTER PANEL OPEN / CLOSE
 // ============================================================
 function openFilterPanel() {
-  const panel   = document.getElementById('filter-panel');
-  const btn     = document.getElementById('filter-trigger-btn');
-  const backdrop= document.getElementById('fp-backdrop');
+  const panel = document.getElementById('filter-panel');
+  const btn   = document.getElementById('filter-trigger-btn');
   panel.classList.add('open');
-  btn.classList.add('active');
-  backdrop.classList.add('visible');
+  if (btn) btn.classList.add('active');
   updateLiveCount();
 }
 function closeFilterPanel() {
-  const panel   = document.getElementById('filter-panel');
-  const btn     = document.getElementById('filter-trigger-btn');
-  const backdrop= document.getElementById('fp-backdrop');
+  const panel = document.getElementById('filter-panel');
+  const btn   = document.getElementById('filter-trigger-btn');
   panel.classList.remove('open');
-  btn.classList.remove('active');
-  backdrop.classList.remove('visible');
+  if (btn) btn.classList.remove('active');
   closeAllDropdowns();
 }
 function toggleFilterPanel() {

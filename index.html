@@ -25,10 +25,11 @@
   <!-- ===================== HERO ===================== -->
   <section class="section active" id="section-hero">
     <div class="video-wrap">
-      <video id="hero-video" autoplay muted loop playsinline>
-        <source src="file.mp4" type="video/mp4" />
+      <!-- Place file.mp4 in the same folder as index.html, OR set VIDEO_SRC in app.js -->
+      <video id="hero-video" autoplay muted loop playsinline preload="auto">
+        <source id="hero-video-src" src="file.mp4" type="video/mp4" />
       </video>
-      <div class="video-fallback"></div>
+      <div class="video-fallback" id="video-fallback"></div>
       <div class="video-overlay"></div>
     </div>
     <canvas id="particle-canvas"></canvas>
@@ -52,7 +53,7 @@
           <span>Browse Available Jets</span>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </button>
-        <button class="hero-secondary-btn" onclick="showSection('listings'); openFilterPanel()">
+        <button class="hero-secondary-btn" onclick="showSection('listings'); setTimeout(openFilterPanel, 80)">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 6h18M7 12h10M11 18h2"/></svg>
           <span>Filter by Route &amp; Date</span>
         </button>
@@ -279,9 +280,6 @@
     </div>
     <button class="back-btn" onclick="showSection('hero')">← Home</button>
   </section>
-
-  <!-- Filter panel backdrop -->
-  <div class="fp-backdrop" id="fp-backdrop" onclick="closeFilterPanel()"></div>
 
   <div id="toast" class="toast"></div>
   <script src="app.js"></script>

@@ -315,26 +315,21 @@ body {
 }
 
 /* ============================================================
-   FILTER PANEL — animated drawer
+   FILTER PANEL — animated drawer (no backdrop, no overflow clip)
    ============================================================ */
-.fp-backdrop {
-  display: none; position: fixed; inset: 0; z-index: 98;
-  background: rgba(26,23,20,0.18);
-  backdrop-filter: blur(2px);
-  animation: backdropIn 0.25s ease;
-}
-.fp-backdrop.visible { display: block; }
-@keyframes backdropIn { from{opacity:0} to{opacity:1} }
-
 .filter-panel {
-  max-height: 0; overflow: hidden;
-  transition: max-height 0.45s cubic-bezier(0.4,0,0.2,1), opacity 0.3s ease;
-  opacity: 0;
-  position: relative; z-index: 99;
+  display: none;
+  position: relative; z-index: 50;
   margin-bottom: 0;
 }
 .filter-panel.open {
-  max-height: 700px; opacity: 1; margin-bottom: 28px;
+  display: block;
+  margin-bottom: 28px;
+  animation: panelSlideIn 0.32s cubic-bezier(0.25,0.1,0.25,1) both;
+}
+@keyframes panelSlideIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 .filter-panel-inner {
@@ -344,6 +339,7 @@ body {
   box-shadow: var(--shadow-lg);
   padding: 32px 36px 28px;
   display: flex; flex-direction: column; gap: 28px;
+  overflow: visible;
 }
 
 /* Filter panel sections */
